@@ -54,10 +54,13 @@
 </head>
 <body  >
 
-<!-- 頭像logo -->
-<img src="../logo.png" width="50px" height="50px" style="border-radius: 50%; margin: 10px; z-index: -100;" id="openLogoModal" />
 
-<div id="logoModal">
+<!-- 頭像logo -->
+<div style="position: fixed; left: 0; top: 0; ">
+  <img src="../logo.png" width="50px" height="50px" style="border-radius: 50%; margin: 10px; z-index: -100;" id="openLogoModal" />
+</div>
+
+<div id="logoModal" style="display: none;">
 <div  style=" position: absolute; top: 0; left: 0; right: 0;  bottom: 0; display: flex;  justify-content: center; align-items: center; z-index:10000;">
   <div style="width:300px; background: white; border-radius: 10px;">
     <div style=" margin: 10px;">
@@ -76,14 +79,16 @@
 </div>
 
 <!-- 開啟權限 -->
-  <div id="arAgree" style=" position: absolute; top: 0; left: 0; right: 0;  bottom: 0; display: flex;  justify-content: center; align-items: center; z-index:10000; ">
-    <div style="width:300px; background: white; border-radius: 10px; border: 1px solid #666;">
-      <div style=" margin: 10px;">
-        <h1 style="text-align: center;">請求權限！</h1>
-        <p style="text-align: center; line-height: 20px; font-size: 16px;">AR需要取用你的運動傳感器</p>
-        <div style="display: flex; justify-content: space-around;">
-          <button type="button" style="border: none; background: none; background: green; color: white; border-radius: 5px; font-size: 14px;" id="startArAgree">確認</button>
-          <button type="button" style="border: none; background: none; background: red; color: white; border-radius: 5px; font-size: 14px;" id="closeArAgree">取消</button>
+  <div id="arAgree" >
+    <div style=" position: absolute; top: 0; left: 0; right: 0;  bottom: 0; display: flex;  justify-content: center; align-items: center; z-index:10000; ">
+      <div style="width:300px; background: white; border-radius: 10px; border: 1px solid #666;">
+        <div style=" margin: 10px;">
+          <h1 style="text-align: center;">請求權限！</h1>
+          <p style="text-align: center; line-height: 20px; font-size: 16px;">AR需要取用你的運動傳感器</p>
+          <div style="display: flex; justify-content: space-around;">
+            <button type="button" style="border: none; background: none; background: green; color: white; border-radius: 5px; font-size: 14px;" id="startArAgree">確認</button>
+            <button type="button" style="border: none; background: none; background: red; color: white; border-radius: 5px; font-size: 14px;" id="closeArAgree">取消</button>
+          </div>
         </div>
       </div>
     </div>
@@ -96,6 +101,23 @@
         <div style=" margin: 10px;">
           <h1 style="text-align: center;">遊戲結束！</h1>
           <p style="text-align: center; line-height: 20px; font-size: 16px;">未獲取得運動傳感器，遊戲結束！</p>
+          <div style="display: flex; justify-content: space-around;">
+            <button type="button" style="border: none; background: none; background: green; color: white; border-radius: 5px; font-size: 14px;" onclick='resetArAgree()'>重玩</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 遊戲結束 -->
+  <div id="endGame" style="display: none;">
+    <div  style=" position: absolute; top: 0; left: 0; right: 0;  bottom: 0; display: flex;  justify-content: center; align-items: center; z-index:10000; ">
+      <div style="width:300px; background: white; border-radius: 10px; border: 1px solid #666;">
+        <div style=" margin: 10px;">
+          <h1 style="text-align: center;">遊戲結束！</h1>
+          <div style="display: flex; justify-content: space-around;">
+            <button type="button" style="border: none; background: none; background: green; color: white; border-radius: 5px; font-size: 14px;" onclick='resetArAgree()'>重玩</button>
+          </div>
         </div>
       </div>
     </div>
@@ -104,13 +126,14 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div id="three">
   <div class="relative z-10 hidden" id="logoModal" aria-labelledby="modal-title" role="dialog" aria-modal="true" >
-      <div style="display: flex; flex-direction: column; align-items: flex-end;  position: fixed; top: 10px; right: 2vw;  color: red;">
-          <p id="seconds" >秒數：30</p>
-          <p id="startButton" >背景音樂</p>
+        <div style="display: flex; flex-direction: column; align-items: flex-end;  position: fixed; top: 10px; right: 2vw;  color: red;">
+            <p id="seconds" >秒數：60</p>
+            <p id="startButton" >背景音樂</p>
+          </div>
         </div>
       </div>
-    </div>
-</div>
+  </div>
+
   <video style="position: absolute; left: 0; top: 0; width: 100%;  height: 100%; z-index:-100; "/>
   
   <audio id="backgroundMusic" loop  preload="auto" style="border: 1px solid black; padding: 5px; display: none" ><source src="14028.mp3" type="audio/mp3"> </audio>
@@ -188,12 +211,12 @@
   
     // 倒计时计分
     function timers(){
-        seconds=60
+        seconds=30
         window.timer =  setInterval(() => {
             seconds -= 1;
             $("#seconds").text(`秒數：${seconds||0}`)
             if (seconds <= 0) {
-                seconds=60
+                seconds=30
                 $("#seconds").text(`秒數：${seconds}`)
                 // 清空定时器
                 clearInterval( window.timer)
@@ -211,9 +234,9 @@
                 startPostions={}
                 pageTimer={}
                
-                cube();//重新产生对象（兔子）
-                timers();//重新算分
-            }
+                closeAll();
+
+              }
         }, 1000);
      }
 
@@ -257,12 +280,12 @@
         window.addEventListener('resize', onWindowResize);
 
         // 陀螺仪控制器
-        // controls = new DeviceOrientationControls(camera);
-        // controls.connect();
+        controls = new DeviceOrientationControls(camera);
+        controls.connect();
        
         // 轨迹控制器
-        controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set(0, 0, 0);
+        // controls = new OrbitControls(camera, renderer.domElement);
+        // controls.target.set(0, 0, 0);
 
         plane();
         cube(rollOverMeshs);
@@ -476,7 +499,6 @@
      
     // 點擊移動事件
     function moveClick(object){
-      console.log(121,object)
       const objectMesh=rollOverMeshs.find(mesh=>mesh.name==object.name)
       if(objectMesh){
 
@@ -617,26 +639,26 @@
               main();
               animate();
         }
-  }
+    }
 
-  const logoModal = document.getElementById("logoModal");
-    logoModal.style.display = "none";
+    $('#logoModal').css('display','none')
+    $('#arClose').css('display','none')
+
     $('#openLogoModal').click(()=>{
-      logoModal.style.display = "block";
+      $('#logoModal').css('display','block')
     })
 
     $('#closeLogoModal').click(()=>{
-      logoModal.style.display = "none";
+      $('#logoModal').css('display','none')
     })
 
-    const arClose=document.getElementById('arClose')
-    arClose.style.display='none'
     $('#arClose').click(()=>{
-      arClose.style.display = "block";
-      logoModal.style.display = "none";
+      $('#arClose').css('display','block')
+      $('#logoModal').css('display','none')
     })
 
     $('#startArAgree').click(()=>{
+
       $('#arAgree').css('display','none')
       deviceorientationEvent()//開啟遊戲
     })
@@ -648,8 +670,91 @@
 
     $('#arClose').click(()=>{
       $('#arClose').css('display','none')
+      $('#startArAgree').css('display','block')
+      removeScene()
     })
+
  
+    const stopMediaStream =function(){
+      var MediaStream = window.MediaStream;
+      window.mediaStreamTrack && window.mediaStreamTrack.stop();//關閉攝像頭
+      if (typeof MediaStream === 'undefined' && typeof webkitMediaStream !== 'undefined') {
+          MediaStream = webkitMediaStream;
+      }
+
+      /*global MediaStream:true */
+      if (typeof MediaStream !== 'undefined' ) {
+          MediaStream.prototype.stop = function() {
+              this.getTracks().forEach(function(track) {
+                  track.stop();
+              });
+          };
+      }
+    }
+
+ const  removeScene = () => {
+    this.clearScene();
+  };
+
+  clearCache = item => {
+    item.geometry.dispose();
+    item.material.dispose();
+  };
+
+  clearScene = () => {
+    this.removeObj(this.scene);
+  };
+
+  removeObj = obj => {
+    let arr = obj.children.filter(x => x);
+    arr.forEach(item => {
+      if (item.children.length) {
+        this.removeObj(item);
+      } else {
+        this.clearCache(item);
+        item.clear();
+      }
+    });
+    obj.clear();
+    arr = null;
+  };
+
+  destroyed = () => {
+    window.removeEventListener("resize", this.onWindowResize);
+    this.clearScene();
+    this.renderer.renderLists.dispose();
+    this.renderer.dispose();
+    this.renderer.forceContextLoss();
+    this.renderer.domElement = null;
+    this.renderer.content = null;
+    this.renderer = null;
+    cancelAnimationFrame(animationId);
+    THREE.Cache.clear();
+  };
+
+</script>
+
+<script>
+
+
+  function resetArAgree(){
+    // $('#resetArAgree').css('display','none')
+    // $('#endGame').css('display','none')
+        // $('#arAgree').css('display','block')
+    // window.location.href=window.location.href
+    window.location.reload()
+  }
+
+ function closeAll(){
+    $('#endGame').css('display','none')
+    $('#arAgree').css('display','none')
+    $('#logoModal').css('display','none')
+    $('#arClose').css('display','block')
+    const bgm=document.getElementById('backgroundMusic');
+    bgm.pause()//關閉背景音樂
+
+ }
+    
 </script>
 </body>
 </html>

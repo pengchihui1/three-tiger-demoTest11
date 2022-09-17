@@ -1,5 +1,6 @@
 // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
 window.onload = function () {
+
   if (navigator.mediaDevices === undefined) {
     navigator.mediaDevices = {};
   }
